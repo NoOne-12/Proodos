@@ -42,6 +42,7 @@ const RoadmapDetail: React.FC = () => {
   const [editingSkill, setEditingSkill] = useState<Skill | null>(null);
   const [skillTitle, setSkillTitle] = useState('');
   const [skillDesc, setSkillDesc] = useState('');
+  const [skillNotes, setSkillNotes] = useState('');
   const [skillEstMinutes, setSkillEstMinutes] = useState<number | ''>('');
   const [skillResourceUrl, setSkillResourceUrl] = useState('');
   const [urlError, setUrlError] = useState<string | null>(null);
@@ -144,6 +145,7 @@ const RoadmapDetail: React.FC = () => {
     setEditingSkill(null);
     setSkillTitle('');
     setSkillDesc('');
+    setSkillNotes('');
     setSkillEstMinutes('');
     setSkillResourceUrl('');
     setUrlError(null);
@@ -156,6 +158,7 @@ const RoadmapDetail: React.FC = () => {
     setEditingSkill(skill);
     setSkillTitle(skill.title);
     setSkillDesc(skill.description || '');
+    setSkillNotes(skill.notes || '');
     setSkillEstMinutes(skill.estimatedMinutes || '');
     setSkillResourceUrl(skill.resourceUrl || '');
     setUrlError(null);
@@ -189,6 +192,7 @@ const RoadmapDetail: React.FC = () => {
         categoryId: targetCategoryId,
         title: skillTitle.trim(),
         description: skillDesc.trim() || undefined,
+        notes: skillNotes.trim() || undefined,
         estimatedMinutes: skillEstMinutes !== '' ? Number(skillEstMinutes) : undefined,
         resourceUrl: cleanUrl || null
       };
@@ -386,6 +390,12 @@ const RoadmapDetail: React.FC = () => {
                                   {skill.description}
                                 </p>
                               )}
+                              {skill.notes && (
+                                <div className="mt-1.5 p-2 rounded-lg bg-black/5 dark:bg-white/5 border border-[var(--border-color)] text-[11px] text-[var(--text-main)]">
+                                  <span className="text-[10px] font-bold text-[var(--primary)] uppercase tracking-wider block mb-0.5">Notes</span>
+                                  <p className="whitespace-pre-wrap">{skill.notes}</p>
+                                </div>
+                              )}
                             </div>
 
                             <div className="flex items-center gap-1 shrink-0">
@@ -537,13 +547,25 @@ const RoadmapDetail: React.FC = () => {
 
           <div>
             <label className="block text-sm font-medium mb-1.5 text-[var(--text-main)]">
-              Description / Resources (Optional)
+              Description / Objectives (Optional)
             </label>
             <textarea
               className="w-full h-20 rounded-md border border-[var(--border-color)] bg-[var(--bg-surface)] px-3 py-2 text-sm placeholder:text-[var(--text-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
-              placeholder="Key notes, links to docs, or specific learning targets..."
+              placeholder="What concepts will you master?"
               value={skillDesc}
               onChange={(e) => setSkillDesc(e.target.value)}
+            />
+          </div>
+
+          <div>
+            <label className="block text-sm font-medium mb-1.5 text-[var(--text-main)]">
+              Personal Skill Notes (Optional)
+            </label>
+            <textarea
+              className="w-full h-20 rounded-md border border-[var(--border-color)] bg-[var(--bg-surface)] px-3 py-2 text-sm placeholder:text-[var(--text-muted)] focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-[var(--primary)]"
+              placeholder="e.g. Need to understand useEffect cleanup or tricky syntax notes..."
+              value={skillNotes}
+              onChange={(e) => setSkillNotes(e.target.value)}
             />
           </div>
 

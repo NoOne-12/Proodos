@@ -8,6 +8,7 @@ const skillSchema = z.object({
   categoryId: z.string().uuid(),
   title: z.string().min(1, 'Title is required'),
   description: z.string().optional().nullable(),
+  notes: z.string().optional().nullable(),
   order: z.number().int().default(0),
   estimatedMinutes: z.number().int().optional().nullable(),
   resourceUrl: z.string().url('Invalid URL format').optional().nullable().or(z.literal(''))
@@ -36,6 +37,7 @@ export const createSkill = async (req: Request, res: Response, next: NextFunctio
         categoryId: data.categoryId,
         title: data.title,
         description: data.description,
+        notes: data.notes,
         order: data.order,
         estimatedMinutes: data.estimatedMinutes,
         resourceUrl: data.resourceUrl ? data.resourceUrl : null
@@ -66,6 +68,9 @@ export const updateSkill = async (req: Request, res: Response, next: NextFunctio
     const updateData = { ...data };
     if (data.resourceUrl !== undefined) {
       updateData.resourceUrl = data.resourceUrl ? data.resourceUrl : null;
+    }
+    if (data.notes !== undefined) {
+      updateData.notes = data.notes ? data.notes : null;
     }
     
     const updated = await prisma.skill.update({

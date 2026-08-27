@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Outlet, NavLink, useNavigate } from 'react-router-dom';
 import { useDispatch, useSelector } from 'react-redux';
 import { 
@@ -15,23 +15,39 @@ import {
   Sun, 
   Moon, 
   Sparkles,
-  Play
+  Play,
+  Search as SearchIcon
 } from 'lucide-react';
 import { RootState } from '../store';
 import { logout } from '../store/authSlice';
 import api from '../services/api';
 import { cn } from '../components/ui/Button';
+import { GlobalSearchModal } from '../components/search/GlobalSearchModal';
+import { NotificationDropdown } from '../components/notifications/NotificationDropdown';
 
 export const MainLayout: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const user = useSelector((state: RootState) => state.auth.user);
   
+  const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
     return document.documentElement.classList.contains('dark') || 
       localStorage.getItem('theme') === 'dark';
   });
+
+  // Global Ctrl+K / Cmd+K search shortcut listener
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if ((e.ctrlKey || e.metaKey) && e.key.toLowerCase() === 'k') {
+        e.preventDefault();
+        setSearchOpen((prev) => !prev);
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, []);
 
   const toggleTheme = () => {
     if (isDarkMode) {
@@ -68,11 +84,13 @@ export const MainLayout: React.FC = () => {
 
   return (
     <div className="min-h-screen flex flex-col md:flex-row bg-[var(--bg-main)] text-[var(--text-main)] transition-colors duration-200">
+      <GlobalSearchModal isOpen={searchOpen} onClose={() => setSearchOpen(false)} />
+
       {/* Desktop Sidebar */}
       <aside className="hidden md:flex flex-col w-64 border-r border-[var(--border-color)] bg-[var(--bg-surface)] px-4 py-6 justify-between shrink-0 h-screen sticky top-0">
         <div>
-          {/* Logo */}
-          <div className="flex items-center justify-between px-3 mb-8">
+          {/* Logo & Quick Search Trigger */}
+          <div className="flex items-center justify-between px-3 mb-6">
             <div className="flex items-center gap-3">
               <div className="w-10 h-10 rounded-xl bg-[var(--primary)] text-white flex items-center justify-center font-serif font-black text-xl shadow-md">
                 Π
@@ -84,11 +102,25 @@ export const MainLayout: React.FC = () => {
             </div>
           </div>
 
+          {/* Search Trigger Button */}
+          <div className="px-2 mb-4">
+            <button
+              onClick={() => setSearchOpen(true)}
+              className="w-full flex items-center justify-between px-3 py-2 rounded-xl bg-black/5 dark:bg-white/5 border border-[var(--border-color)] text-xs text-[var(--text-muted)] hover:text-[var(--text-main)] hover:border-[var(--primary)]/40 transition-all cursor-pointer shadow-2xs"
+            >
+              <div className="flex items-center gap-2">
+                <SearchIcon className="w-3.5 h-3.5" />
+                <span>Quick Search...</span>
+              </div>
+              <kbd className="px-1.5 py-0.5 text-[10px] font-mono bg-black/10 dark:bg-white/10 rounded">⌘K</kbd>
+            </button>
+          </div>
+
           {/* Quick Action Start Learning */}
           <div className="px-2 mb-6">
             <button
               onClick={() => navigate('/learning')}
-              className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white font-medium text-xs flex items-center justify-center gap-2 shadow-sm hover:opacity-95 transition-all hover:shadow"
+              className="w-full py-2.5 px-4 rounded-xl bg-gradient-to-r from-[var(--primary)] to-[var(--accent)] text-white font-medium text-xs flex items-center justify-center gap-2 shadow-sm hover:opacity-95 transition-all hover:shadow cursor-pointer"
             >
               <Play className="w-3.5 h-3.5 fill-current" />
               Quick Focus Session
@@ -120,20 +152,24 @@ export const MainLayout: React.FC = () => {
           <div className="flex items-center justify-between">
             <button
               onClick={toggleTheme}
-              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--text-muted)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+              className="flex items-center gap-2 px-3 py-1.5 rounded-lg text-xs font-medium text-[var(--text-muted)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
               title="Toggle Theme"
             >
               {isDarkMode ? <Sun className="w-4 h-4 text-[var(--color-brand-ochre)]" /> : <Moon className="w-4 h-4 text-[var(--primary)]" />}
-              <span>{isDarkMode ? 'Light Mode' : 'Dark Mode'}</span>
+              <span>{isDarkMode ? 'Light' : 'Dark'}</span>
             </button>
 
-            <button
-              onClick={handleLogout}
-              className="p-1.5 rounded-lg text-[var(--color-brand-brick)] hover:bg-[var(--color-brand-brick)]/10 transition-colors"
-              title="Sign Out"
-            >
-              <LogOut className="w-4 h-4" />
-            </button>
+            <div className="flex items-center gap-1">
+              <NotificationDropdown />
+
+              <button
+                onClick={handleLogout}
+                className="p-1.5 rounded-lg text-[var(--color-brand-brick)] hover:bg-[var(--color-brand-brick)]/10 transition-colors cursor-pointer"
+                title="Sign Out"
+              >
+                <LogOut className="w-4 h-4" />
+              </button>
+            </div>
           </div>
 
           <div 
@@ -161,6 +197,14 @@ export const MainLayout: React.FC = () => {
         </div>
 
         <div className="flex items-center gap-2">
+          <button
+            onClick={() => setSearchOpen(true)}
+            className="p-2 rounded-lg text-[var(--text-muted)]"
+            title="Search"
+          >
+            <SearchIcon className="w-5 h-5" />
+          </button>
+          <NotificationDropdown />
           <button
             onClick={toggleTheme}
             className="p-2 rounded-lg text-[var(--text-muted)]"

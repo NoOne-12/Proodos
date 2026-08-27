@@ -16,6 +16,7 @@ export interface Skill {
   categoryId: string;
   title: string;
   description?: string | null;
+  notes?: string | null;
   status: SkillStatus;
   order: number;
   estimatedMinutes?: number | null;
@@ -82,20 +83,46 @@ export interface Goal {
   updatedAt: string;
 }
 
+export interface NotificationItem {
+  id: string;
+  title: string;
+  message: string;
+  type: 'STREAK' | 'GOAL' | 'ACHIEVEMENT' | 'REMINDER' | 'INFO';
+  linkUrl?: string | null;
+  read: boolean;
+  createdAt: string;
+}
+
+export interface ActivityDay {
+  date: string;
+  dayName: string;
+  monthName: string;
+  minutes: number;
+  count: number;
+  level: number; // 0, 1, 2, 3
+}
+
 export interface DashboardStats {
   todaysLearningTime: number;
   todaysTarget: number;
+  weeklyLearningMinutes: number;
   currentStreak: number;
   longestStreak: number;
   overallProgress: number;
   completedSkillsCount: number;
   inProgressSkillsCount: number;
   remainingSkillsCount: number;
+  recommendedSkill?: (Skill & {
+    categoryName: string;
+    roadmapTitle: string;
+    roadmapId: string;
+  }) | null;
   weeklyChart: Array<{
     date: string;
     dayName: string;
     minutes: number;
   }>;
+  activityCalendar: ActivityDay[];
   recentActivity: LearningSession[];
 }
 
@@ -132,5 +159,27 @@ export interface StatisticsData {
   productivityByDay: Array<{
     day: string;
     minutes: number;
+  }>;
+}
+
+export interface SearchResults {
+  roadmaps: Array<{
+    id: string;
+    title: string;
+    description?: string | null;
+    status: RoadmapStatus;
+    dailyTargetMinutes: number;
+  }>;
+  skills: Array<Skill & {
+    category: {
+      id: string;
+      name: string;
+      roadmapId: string;
+      roadmap: { id: string; title: string };
+    };
+  }>;
+  goals: Goal[];
+  learningSessions: Array<LearningSession & {
+    skill?: { id: string; title: string };
   }>;
 }

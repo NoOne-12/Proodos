@@ -21,8 +21,23 @@ model User {
   roadmaps            Roadmap[]
   learningSessions    LearningSession[]
   goals               Goal[]
+  notifications       Notification[]
   oauthAccounts       OAuthAccount[]
   passwordResetTokens PasswordResetToken[]
+}
+
+model Notification {
+  id        String   @id @default(uuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title     String
+  message   String
+  type      String   @default("INFO") // 'STREAK' | 'GOAL' | 'ACHIEVEMENT' | 'REMINDER' | 'INFO'
+  linkUrl   String?
+  read      Boolean  @default(false)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
 
 model OAuthAccount {
@@ -81,6 +96,7 @@ model Skill {
   category         Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
   title            String
   description      String?
+  notes            String?
   status           SkillStatus       @default(NOT_STARTED)
   order            Int
   estimatedMinutes Int?

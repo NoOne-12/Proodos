@@ -12,7 +12,9 @@ import {
   ArrowRight, 
   BookOpen, 
   Sparkles,
-  Award
+  Award,
+  Calendar,
+  Compass
 } from 'lucide-react';
 import { 
   ResponsiveContainer, 
@@ -130,6 +132,42 @@ const Dashboard: React.FC = () => {
         </div>
       </div>
 
+      {/* Feature 10: "What Should I Learn Today?" Focus Card */}
+      {stats?.recommendedSkill && (
+        <div className="p-5 sm:p-6 rounded-2xl bg-gradient-to-r from-[var(--primary)]/10 via-[var(--bg-surface)] to-[var(--accent)]/10 border border-[var(--primary)]/25 flex flex-col sm:flex-row sm:items-center justify-between gap-4 shadow-sm">
+          <div className="space-y-1">
+            <div className="flex items-center gap-2 text-[11px] font-bold text-[var(--primary)] uppercase tracking-wider">
+              <Compass className="w-4 h-4" />
+              <span>Today's Recommended Focus</span>
+            </div>
+            <h3 className="text-lg sm:text-xl font-bold font-serif text-[var(--text-main)]">
+              {stats.recommendedSkill.title}
+            </h3>
+            <p className="text-xs text-[var(--text-muted)]">
+              {stats.recommendedSkill.roadmapTitle} • {stats.recommendedSkill.categoryName} • Status:{' '}
+              <strong className="text-[var(--text-main)]">{stats.recommendedSkill.status.replace('_', ' ')}</strong>
+            </p>
+          </div>
+
+          <div className="flex items-center gap-3 shrink-0">
+            <Button
+              onClick={() =>
+                navigate('/learning', {
+                  state: {
+                    skillId: stats.recommendedSkill!.id,
+                    roadmapId: stats.recommendedSkill!.roadmapId,
+                  },
+                })
+              }
+              className="flex items-center gap-2 bg-[var(--primary)] text-white shadow-md text-xs"
+            >
+              <Play className="w-3.5 h-3.5 fill-current" />
+              Start Focus Session ({stats.recommendedSkill.estimatedMinutes || 45}m)
+            </Button>
+          </div>
+        </div>
+      )}
+
       {/* 4 Core Summary Metric Cards */}
       <div className="grid gap-4 sm:grid-cols-2 lg:grid-cols-4">
         {/* Today's Target */}
@@ -209,13 +247,55 @@ const Dashboard: React.FC = () => {
         </Card>
       </div>
 
+      {/* Feature 5: Learning Activity Calendar (Heatmap Grid) */}
+      <Card>
+        <CardHeader className="flex flex-row items-center justify-between pb-2">
+          <div>
+            <CardTitle className="text-base font-bold flex items-center gap-2">
+              <Calendar className="w-4 h-4 text-[var(--primary)]" />
+              Learning Activity Calendar
+            </CardTitle>
+            <p className="text-xs text-[var(--text-muted)] mt-0.5">12-week study cadence and session density</p>
+          </div>
+          <div className="flex items-center gap-1.5 text-[10px] text-[var(--text-muted)]">
+            <span>Less</span>
+            <span className="w-2.5 h-2.5 rounded-xs bg-black/10 dark:bg-white/10" />
+            <span className="w-2.5 h-2.5 rounded-xs bg-[var(--primary)]/30" />
+            <span className="w-2.5 h-2.5 rounded-xs bg-[var(--primary)]/70" />
+            <span className="w-2.5 h-2.5 rounded-xs bg-[var(--primary)]" />
+            <span>More</span>
+          </div>
+        </CardHeader>
+        <CardContent className="pt-3">
+          <div className="overflow-x-auto pb-2">
+            <div className="grid grid-flow-col grid-rows-7 gap-1.5 min-w-[640px]">
+              {stats?.activityCalendar?.map((day) => {
+                const colors = [
+                  'bg-black/5 dark:bg-white/10 hover:ring-1 hover:ring-[var(--border-color)]',
+                  'bg-[var(--primary)]/30 text-white hover:ring-1 hover:ring-[var(--primary)]',
+                  'bg-[var(--primary)]/70 text-white hover:ring-1 hover:ring-[var(--primary)]',
+                  'bg-[var(--primary)] text-white hover:ring-1 hover:ring-[var(--accent)]',
+                ];
+                return (
+                  <div
+                    key={day.date}
+                    className={`w-3.5 h-3.5 rounded-xs transition-all cursor-pointer ${colors[day.level]}`}
+                    title={`${day.date} (${day.dayName}): ${day.minutes} mins, ${day.count} session(s)`}
+                  />
+                );
+              })}
+            </div>
+          </div>
+        </CardContent>
+      </Card>
+
       {/* Main Grid: Weekly Consistency Graph & Active Roadmap Preview */}
       <div className="grid gap-6 lg:grid-cols-3">
         {/* Weekly Learning Bar Chart */}
         <Card className="lg:col-span-2">
           <CardHeader className="flex flex-row items-center justify-between pb-2">
             <div>
-              <CardTitle className="text-base font-bold">7-Day Learning Activity</CardTitle>
+              <CardTitle className="text-base font-bold">7-Day Focus Distribution</CardTitle>
               <p className="text-xs text-[var(--text-muted)] mt-0.5">Focus minutes tracked daily</p>
             </div>
             <Button variant="ghost" size="sm" onClick={() => navigate('/statistics')} className="text-xs">
