@@ -33,9 +33,18 @@ export const MainLayout: React.FC = () => {
   const [searchOpen, setSearchOpen] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
   const [isDarkMode, setIsDarkMode] = useState(() => {
-    return document.documentElement.classList.contains('dark') || 
-      localStorage.getItem('theme') === 'dark';
+    const stored = localStorage.getItem('theme');
+    if (stored === 'light') return false;
+    return true; // Default to dark mode
   });
+
+  useEffect(() => {
+    if (isDarkMode) {
+      document.documentElement.classList.add('dark');
+    } else {
+      document.documentElement.classList.remove('dark');
+    }
+  }, [isDarkMode]);
 
   // Global Ctrl+K / Cmd+K search shortcut listener
   useEffect(() => {
