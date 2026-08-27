@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useForm } from 'react-hook-form';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { z } from 'zod';
@@ -8,6 +8,7 @@ import { setUser } from '../store/authSlice';
 import api from '../services/api';
 import { Input } from '../components/ui/Input';
 import { Button } from '../components/ui/Button';
+import { SocialAuthButtons } from '../components/auth/SocialAuthButtons';
 
 const registerSchema = z.object({
   name: z.string().min(2, 'Name must be at least 2 characters'),
@@ -24,7 +25,7 @@ type RegisterForm = z.infer<typeof registerSchema>;
 const Register: React.FC = () => {
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [serverError, setServerError] = React.useState<string | null>(null);
+  const [serverError, setServerError] = useState<string | null>(null);
 
   const { register, handleSubmit, formState: { errors, isSubmitting } } = useForm<RegisterForm>({
     resolver: zodResolver(registerSchema),
@@ -51,7 +52,7 @@ const Register: React.FC = () => {
   return (
     <div className="bg-[var(--bg-surface)] p-8 rounded-2xl shadow-xl border border-[var(--border-color)] max-w-md w-full">
       <div className="text-center mb-8">
-        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[var(--primary)]/10 text-[var(--primary)] font-bold text-2xl mb-4 border border-[var(--primary)]/20">
+        <div className="inline-flex items-center justify-center w-14 h-14 rounded-2xl bg-[var(--primary)]/10 text-[var(--primary)] font-bold text-2xl mb-4 border border-[var(--primary)]/20 shadow-xs">
           Π
         </div>
         <h1 className="text-3xl font-black tracking-tight text-[var(--primary)] mb-2 font-serif">Join PROODOS</h1>
@@ -59,8 +60,8 @@ const Register: React.FC = () => {
       </div>
 
       {serverError && (
-        <div className="mb-6 p-3 rounded-lg bg-[var(--color-brand-brick)]/10 border border-[var(--color-brand-brick)]/20 text-[var(--color-brand-brick)] text-sm flex items-center gap-2">
-          <span>⚠️</span>
+        <div className="mb-6 p-3.5 rounded-xl bg-[var(--color-brand-brick)]/10 border border-[var(--color-brand-brick)]/20 text-[var(--color-brand-brick)] text-xs flex items-center gap-2.5">
+          <span className="text-base">⚠️</span>
           <span>{serverError}</span>
         </div>
       )}
@@ -103,7 +104,9 @@ const Register: React.FC = () => {
         </Button>
       </form>
 
-      <p className="mt-8 text-center text-xs text-[var(--text-muted)] border-t border-[var(--border-color)] pt-6">
+      <SocialAuthButtons isLoading={isSubmitting} />
+
+      <p className="mt-6 text-center text-xs text-[var(--text-muted)] border-t border-[var(--border-color)] pt-6">
         Already have an account?{' '}
         <Link to="/login" className="font-semibold text-[var(--primary)] hover:underline">
           Sign in
