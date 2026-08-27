@@ -1,0 +1,56 @@
+@import "tailwindcss";
+
+@theme {
+  --color-brand-sand: #E8DDC8;
+  --color-brand-cream: #FBF9F4;
+  --color-brand-forest: #23483A;
+  --color-brand-muted-sage: #718C7A;
+  --color-brand-terracotta: #C87552;
+  --color-brand-charcoal: #202522;
+  --color-brand-stone: #737873;
+  --color-brand-moss: #587A5B;
+  --color-brand-ochre: #C49A4A;
+  --color-brand-brick: #A65346;
+  --color-brand-border: #D6D0C2;
+
+  --color-brand-dark-bg: #121916;
+  --color-brand-dark-surface: #1B2420;
+  --color-brand-dark-elevated: #232E29;
+  --color-brand-dark-soft-sage: #8BAF9A;
+  --color-brand-dark-sage: #789582;
+  --color-brand-dark-terracotta: #D18462;
+  --color-brand-dark-white: #F3EFE5;
+  --color-brand-dark-muted: #A5AEA7;
+  --color-brand-dark-border: #344039;
+
+  --font-sans: 'Inter', ui-sans-serif, system-ui, sans-serif;
+}
+
+@layer base {
+  :root {
+    --bg-main: var(--color-brand-cream);
+    --bg-surface: #FFFFFF;
+    --text-main: var(--color-brand-charcoal);
+    --text-muted: var(--color-brand-stone);
+    --border-color: var(--color-brand-border);
+    --primary: var(--color-brand-forest);
+    --secondary: var(--color-brand-terracotta);
+    --accent: var(--color-brand-moss);
+  }
+  
+  .dark {
+    --bg-main: var(--color-brand-dark-bg);
+    --bg-surface: var(--color-brand-dark-surface);
+    --text-main: var(--color-brand-dark-white);
+    --text-muted: var(--color-brand-dark-muted);
+    --border-color: var(--color-brand-dark-border);
+    --primary: var(--color-brand-dark-soft-sage);
+    --secondary: var(--color-brand-dark-terracotta);
+    --accent: var(--color-brand-dark-sage);
+  }
+  
+  body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+  }
+}
