@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import prisma from '../lib/prisma';
 import { z } from 'zod';
 import { AppError } from '../utils/errors';
-import { SkillStatus } from '../generated/client';
+import { SkillStatus } from '@prisma/client';
 
 const skillSchema = z.object({
   categoryId: z.string().uuid(),
