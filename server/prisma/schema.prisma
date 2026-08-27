@@ -1,0 +1,118 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model User {
+  id               String            @id @default(uuid())
+  name             String
+  email            String            @unique
+  passwordHash     String
+  avatar           String?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  roadmaps         Roadmap[]
+  learningSessions LearningSession[]
+  goals            Goal[]
+}
+
+model Roadmap {
+  id                 String        @id @default(uuid())
+  userId             String
+  user               User          @relation(fields: [userId], references: [id], onDelete: Cascade)
+  title              String
+  description        String?
+  targetDate         DateTime?
+  dailyTargetMinutes Int           @default(30)
+  status             RoadmapStatus @default(ACTIVE)
+  createdAt          DateTime      @default(now())
+  updatedAt          DateTime      @updatedAt
+  categories         Category[]
+  goals              Goal[]
+}
+
+model Category {
+  id          String   @id @default(uuid())
+  roadmapId   String
+  roadmap     Roadmap  @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  name        String
+  description String?
+  order       Int
+  skills      Skill[]
+}
+
+model Skill {
+  id               String            @id @default(uuid())
+  categoryId       String
+  category         Category          @relation(fields: [categoryId], references: [id], onDelete: Cascade)
+  title            String
+  description      String?
+  status           SkillStatus       @default(NOT_STARTED)
+  order            Int
+  estimatedMinutes Int?
+  resourceUrl      String?
+  completedAt      DateTime?
+  createdAt        DateTime          @default(now())
+  updatedAt        DateTime          @updatedAt
+  learningSessions LearningSession[]
+}
+
+model LearningSession {
+  id              String    @id @default(uuid())
+  userId          String
+  user            User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  skillId         String
+  skill           Skill     @relation(fields: [skillId], references: [id], onDelete: Cascade)
+  startedAt       DateTime
+  endedAt         DateTime?
+  durationMinutes Int       @default(0)
+  notes           String?
+  createdAt       DateTime  @default(now())
+}
+
+model Goal {
+  id           String     @id @default(uuid())
+  userId       String
+  user         User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  roadmapId    String?
+  roadmap      Roadmap?   @relation(fields: [roadmapId], references: [id], onDelete: Cascade)
+  title        String
+  description  String?
+  type         GoalType
+  targetValue  Int
+  currentValue Int        @default(0)
+  deadline     DateTime?
+  status       GoalStatus @default(ACTIVE)
+  createdAt    DateTime   @default(now())
+  updatedAt    DateTime   @updatedAt
+}
+
+enum RoadmapStatus {
+  ACTIVE
+  ARCHIVED
+  COMPLETED
+}
+
+enum SkillStatus {
+  NOT_STARTED
+  IN_PROGRESS
+  COMPLETED
+}
+
+enum GoalType {
+  DEADLINE
+  DURATION
+  COUNT
+}
+
+enum GoalStatus {
+  ACTIVE
+  COMPLETED
+  FAILED
+}
