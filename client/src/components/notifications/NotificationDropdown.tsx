@@ -4,7 +4,13 @@ import { Bell, Check, CheckCheck, Sparkles, X } from 'lucide-react';
 import api from '../../services/api';
 import { NotificationItem } from '../../types';
 
-export const NotificationDropdown: React.FC = () => {
+interface NotificationDropdownProps {
+  placement?: 'bottom-sidebar' | 'top-header';
+}
+
+export const NotificationDropdown: React.FC<NotificationDropdownProps> = ({ 
+  placement = 'top-header' 
+}) => {
   const navigate = useNavigate();
   const [isOpen, setIsOpen] = useState(false);
   const [notifications, setNotifications] = useState<NotificationItem[]>([]);
@@ -69,7 +75,7 @@ export const NotificationDropdown: React.FC = () => {
     <div className="relative" ref={dropdownRef}>
       <button
         onClick={() => setIsOpen(!isOpen)}
-        className="relative p-2 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors"
+        className="relative p-2 rounded-xl text-[var(--text-muted)] hover:text-[var(--text-main)] hover:bg-black/5 dark:hover:bg-white/5 transition-colors cursor-pointer"
         title="Notifications"
       >
         <Bell className="w-4 h-4" />
@@ -79,7 +85,13 @@ export const NotificationDropdown: React.FC = () => {
       </button>
 
       {isOpen && (
-        <div className="absolute right-0 mt-2 w-80 sm:w-96 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-color)] shadow-2xl z-50 overflow-hidden animate-in fade-in zoom-in-95 duration-150">
+        <div 
+          className={`fixed sm:absolute z-50 rounded-2xl bg-[var(--bg-surface)] border border-[var(--border-color)] shadow-2xl overflow-hidden animate-in fade-in zoom-in-95 duration-150 ${
+            placement === 'bottom-sidebar'
+              ? 'left-4 bottom-20 w-80 sm:w-96 sm:left-0 sm:bottom-12'
+              : 'right-3 top-16 w-[calc(100vw-24px)] max-w-sm sm:right-0 sm:top-auto sm:mt-2 sm:w-96'
+          }`}
+        >
           <div className="flex items-center justify-between px-4 py-3 border-b border-[var(--border-color)] bg-black/5 dark:bg-white/5">
             <div className="flex items-center gap-2">
               <span className="text-xs font-bold font-serif text-[var(--text-main)]">Notifications</span>

@@ -169,7 +169,7 @@ export const MainLayout: React.FC = () => {
             </button>
 
             <div className="flex items-center gap-1">
-              <NotificationDropdown />
+              <NotificationDropdown placement="bottom-sidebar" />
 
               <button
                 onClick={handleLogout}
@@ -208,12 +208,12 @@ export const MainLayout: React.FC = () => {
         <div className="flex items-center gap-2">
           <button
             onClick={() => setSearchOpen(true)}
-            className="p-2 rounded-lg text-[var(--text-muted)]"
+            className="p-2 rounded-lg text-[var(--text-muted)] hover:bg-black/5 dark:hover:bg-white/5"
             title="Search"
           >
             <SearchIcon className="w-5 h-5" />
           </button>
-          <NotificationDropdown />
+          <NotificationDropdown placement="top-header" />
           <button
             onClick={toggleTheme}
             className="p-2 rounded-lg text-[var(--text-muted)]"
