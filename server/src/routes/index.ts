@@ -1,4 +1,4 @@
-import { Router } from 'express';
+import { Router, Request, Response } from 'express';
 import authRoutes from './auth.routes';
 import roadmapRoutes from './roadmap.routes';
 import categoryRoutes from './category.routes';
@@ -19,7 +19,7 @@ router.use('/dashboard', dashboardRoutes);
 router.use('/goals', goalRoutes);
 router.use('/statistics', statisticsRoutes);
 
-router.get('/health', (req, res) => {
+router.get('/health', (_req: Request, res: Response) => {
   res.json({ success: true, message: 'API is running' });
 });
 
