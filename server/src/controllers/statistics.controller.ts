@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../lib/prisma';
-import { startOfDay, endOfDay, subDays, startOfWeek, startOfMonth, format } from 'date-fns';
+import { startOfDay } from 'date-fns/startOfDay';
+import { endOfDay } from 'date-fns/endOfDay';
+import { subDays } from 'date-fns/subDays';
+import { startOfWeek } from 'date-fns/startOfWeek';
+import { startOfMonth } from 'date-fns/startOfMonth';
+import { format } from 'date-fns/format';
 
 export const getStatistics = async (req: Request, res: Response, next: NextFunction) => {
   try {

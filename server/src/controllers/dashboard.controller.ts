@@ -1,6 +1,11 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../lib/prisma';
-import { startOfDay, endOfDay, subDays, startOfWeek, endOfWeek, format } from 'date-fns';
+import { startOfDay } from 'date-fns/startOfDay';
+import { endOfDay } from 'date-fns/endOfDay';
+import { subDays } from 'date-fns/subDays';
+import { startOfWeek } from 'date-fns/startOfWeek';
+import { endOfWeek } from 'date-fns/endOfWeek';
+import { format } from 'date-fns/format';
 
 export const getDashboardStats = async (req: Request, res: Response, next: NextFunction) => {
   try {

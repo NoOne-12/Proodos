@@ -1,6 +1,7 @@
 import { Request, Response, NextFunction } from 'express';
 import prisma from '../lib/prisma';
-import { subDays, format } from 'date-fns';
+import { subDays } from 'date-fns/subDays';
+import { format } from 'date-fns/format';
 
 export const getNotifications = async (req: Request, res: Response, next: NextFunction) => {
   try {
