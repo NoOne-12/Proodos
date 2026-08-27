@@ -1,0 +1,15 @@
+version: '3.8'
+services:
+  db:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: proodos_user
+      POSTGRES_PASSWORD: proodos_password
+      POSTGRES_DB: proodos_dbs
+    ports:
+      - "5432:5432"
+    volumes:
+      - pgdata:/var/lib/postgresql/data
+
+volumes:
+  pgdata:
