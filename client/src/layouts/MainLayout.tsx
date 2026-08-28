@@ -96,7 +96,7 @@ export const MainLayout: React.FC = () => {
   };
 
   const navItems = [
-    { name: 'Dashboard', path: '/', icon: LayoutDashboard },
+    { name: 'Dashboard', path: '/dashboard', icon: LayoutDashboard },
     { name: 'Roadmaps', path: '/roadmaps', icon: Map },
     { name: 'Focus Session', path: '/learning', icon: Timer },
     { name: 'Goals', path: '/goals', icon: Target },
@@ -122,9 +122,9 @@ export const MainLayout: React.FC = () => {
           <div className={cn("flex items-center mb-2", isCollapsed ? "justify-center" : "justify-between px-2")}>
             <div className="flex items-center gap-3 overflow-hidden">
               <div 
-                onClick={() => navigate('/')} 
+                onClick={() => navigate('/dashboard')} 
                 className="w-10 h-10 rounded-xl bg-[var(--primary)] text-white flex items-center justify-center font-serif font-black text-xl shadow-md shrink-0 cursor-pointer"
-                title="Proodos Home"
+                title="Proodos Dashboard"
               >
                 Π
               </div>
@@ -289,7 +289,10 @@ export const MainLayout: React.FC = () => {
 
       {/* Mobile Top Navbar */}
       <header className="md:hidden h-16 border-b border-[var(--border-color)] bg-[var(--bg-surface)] flex items-center justify-between px-4 sticky top-0 z-40">
-        <div className="flex items-center gap-2.5">
+        <div 
+          onClick={() => navigate('/dashboard')}
+          className="flex items-center gap-2.5 cursor-pointer"
+        >
           <div className="w-8 h-8 rounded-lg bg-[var(--primary)] text-white flex items-center justify-center font-serif font-black text-base shadow">
             Π
           </div>

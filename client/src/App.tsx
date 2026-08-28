@@ -17,6 +17,7 @@ import Login from './pages/Login';
 import Register from './pages/Register';
 import ForgotPasswordPage from './pages/ForgotPasswordPage';
 import ResetPasswordPage from './pages/ResetPasswordPage';
+import LandingPage from './pages/LandingPage';
 
 import MainLayout from './layouts/MainLayout';
 import AuthLayout from './layouts/AuthLayout';
@@ -24,7 +25,7 @@ import AuthLayout from './layouts/AuthLayout';
 // Component to verify token on app startup
 const AuthInitializer: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const dispatch = useDispatch();
-  const { isLoading, isAuthenticated } = useSelector((state: RootState) => state.auth);
+  const { isLoading } = useSelector((state: RootState) => state.auth);
 
   useEffect(() => {
     const checkAuth = async () => {
@@ -75,9 +76,19 @@ const ProtectedRoute: React.FC<{ children: React.ReactNode }> = ({ children }) =
 const PublicRoute: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
   if (isAuthenticated) {
-    return <Navigate to="/" replace />;
+    return <Navigate to="/dashboard" replace />;
   }
   return <>{children}</>;
+};
+
+// Route component for the root path (/)
+// Renders LandingPage for guests, and Dashboard (within MainLayout) or redirects to /dashboard if desired.
+const RootRoute: React.FC = () => {
+  const isAuthenticated = useSelector((state: RootState) => state.auth.isAuthenticated);
+  if (isAuthenticated) {
+    return <Navigate to="/dashboard" replace />;
+  }
+  return <LandingPage />;
 };
 
 function App() {
@@ -86,6 +97,9 @@ function App() {
       <AuthInitializer>
         <Router>
           <Routes>
+            {/* Public Landing Page at root */}
+            <Route path="/" element={<RootRoute />} />
+
             {/* Public Authentication Routes */}
             <Route
               element={
@@ -108,7 +122,7 @@ function App() {
                 </ProtectedRoute>
               }
             >
-              <Route path="/" element={<Dashboard />} />
+              <Route path="/dashboard" element={<Dashboard />} />
               <Route path="/roadmaps" element={<RoadmapsList />} />
               <Route path="/roadmaps/:id" element={<RoadmapDetail />} />
               <Route path="/learning" element={<LearningSessionPage />} />
